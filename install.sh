@@ -35,12 +35,12 @@ if not WEBHOOK_URL:
     logging.error("Missing webhook_url in config.")
     exit(1)
 
-RE_LOGIN      = re.compile(r"sshd\[(?P<pid>\d+)\]: Accepted .* for (?P<user>\S+) from (?P<ip>\d+\.\d+\.\d+\.\d+)")
-RE_FAIL_SSH   = re.compile(r"sshd\[(?P<pid>\d+)\]: Failed (?:password|publickey|keyboard-interactive) for (?:invalid user )?(?P<user>\S+) from (?P<ip>\d+\.\d+\.\d+\.\d+)")
-RE_PREAUTH    = re.compile(r"sshd\[(?P<pid>\d+)\]: Connection closed by authenticating user (?P<user>\S+) (?P<ip>\d+\.\d+\.\d+\.\d+)")
-RE_FAIL_PAM   = re.compile(r"sshd\[(?P<pid>\d+)\]: authentication failure;.*rhost=(?P<ip>\d+\.\d+\.\d+\.\d+)")
+RE_LOGIN      = re.compile(r"sshd\[(?P<pid>\d+)\]: Accepted .* for (?P<user>\S+) from (?P<ip>\S+)")
+RE_FAIL_SSH   = re.compile(r"sshd\[(?P<pid>\d+)\]: Failed (?:password|publickey|keyboard-interactive) for (?:invalid user )?(?P<user>\S+) from (?P<ip>\S+)")
+RE_PREAUTH    = re.compile(r"sshd\[(?P<pid>\d+)\]: Connection closed by authenticating user (?P<user>\S+) (?P<ip>\S+)")
+RE_FAIL_PAM   = re.compile(r"sshd\[(?P<pid>\d+)\]: authentication failure;.*rhost=(?P<ip>\S+)")
 RE_SUDO       = re.compile(r"sudo: (?P<user>\S+) : TTY=.* ; PWD=.* ; USER=(?P<target>\S+) ; COMMAND=(?P<cmd>.+)")
-RE_DISCONNECT = re.compile(r"sshd\[(?P<pid>\d+)\]: Disconnected from user (?P<user>\S+) (?P<ip>\d+\.\d+\.\d+\.\d+)")
+RE_DISCONNECT = re.compile(r"sshd\[(?P<pid>\d+)\]: Disconnected from user (?P<user>\S+) (?P<ip>\S+)")
 RE_PAM_CLOSE  = re.compile(r"sshd\[(?P<pid>\d+)\]: pam_unix\(sshd:session\): session closed for user (?P<user>\S+)")
 
 sessions = {}
