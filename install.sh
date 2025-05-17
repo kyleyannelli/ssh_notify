@@ -68,7 +68,7 @@ if __name__ == '__main__':
                 m = RE_LOGIN.search(line)
                 if m:
                     pid, user, ip = m.group('pid'), m.group('user'), m.group('ip')
-                    sessions[pid] = ip
+                    sessions[pid] = (ip, time.time())
                     send_webhook(f"🔓 **{SERVER_NAME}**: `{user}` logged in from `{ip}` (pid {pid})")
                     continue
                 if (m := RE_FAIL_SSH.search(line)):
@@ -89,11 +89,17 @@ if __name__ == '__main__':
                         send_webhook(f"🔌 **{SERVER_NAME}**: `{user}` disconnected from `{ip}` (pid {pid})")
                     continue
                 if (m := RE_PAM_CLOSE.search(line)):
-                    pid, user = m.group('pid'), m.group('user')
-                    ip = sessions.pop(pid, None)
-                    if ip:
-                        send_webhook(f"🔒 **{SERVER_NAME}**: `{user}` logged out from `{ip}` (pid {pid})")
-                    continue
+                  pid, user = m.group('pid'), m.group('user')
+                  ip, start = sessions.pop(pid, (None, None))
+                  if ip:
+                      if start:
+                          elapsed = int(time.time() - start)
+                          mins, secs = divmod(elapsed, 60)
+                          fmt = f"{mins}m{secs}s" if mins else f"{secs}s"
+                      else:
+                          fmt = "unknown duration"
+                      send_webhook(f"🔒 **{SERVER_NAME}**: `{user}` logged out from `{ip}` after `{fmt}` (pid {pid})")
+
     except KeyboardInterrupt:
         logging.info("Shutting down.")
 PYTHON_EOF
